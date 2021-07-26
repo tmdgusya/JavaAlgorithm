@@ -13,11 +13,80 @@ public class Pro42586 {
 
     public int[] solution(int[] progresses, int[] speeds) {
         List<Integer> timeStamp = new ArrayList();
+        Queue<Integer> workReportQueue = new LinkedList<>();
         int[] doneTime = new int[progresses.length];
-        Arrays.fill(doneTime, 0);
-
         int time = 1;
 
+        writeDonTimeReport(progresses, speeds, time, doneTime);
+
+        System.out.println(Arrays.toString(doneTime));
+
+        int addCount = 0;
+
+//        forLoopSolution(doneTime, addCount, timeStamp);
+
+        queueSolution(doneTime, workReportQueue, timeStamp);
+
+        int[] answer = new int[timeStamp.size()];
+
+        for(int i = 0; i < timeStamp.size(); i++) {
+            answer[i] = timeStamp.get(i);
+        }
+
+        return answer;
+    }
+
+    public void queueSolution(int[] doneTime, Queue<Integer> workReportQueue, List<Integer> timeStamp) {
+
+        for(int i = 0; i < doneTime.length; i++) {
+            workReportQueue.add(doneTime[i]);
+        }
+
+        while (!workReportQueue.isEmpty()) {
+
+            int beforeWorkTime = workReportQueue.poll();
+            int deployCount = 1;
+
+            while (!workReportQueue.isEmpty()) {
+                if(workReportQueue.peek() <= beforeWorkTime) {
+                    deployCount++;
+                    beforeWorkTime = workReportQueue.poll();
+                }else {
+                    break;
+                }
+            }
+
+            timeStamp.add(deployCount);
+        }
+
+    }
+
+    public void forLoopSolution(int[] doneTime, int addCount, List<Integer> timeStamp) {
+        for(int i = 0; i < doneTime.length; i++) {
+            int minDeployTime = doneTime[i];
+            int deployCountPerTime = 1;
+            for(int j = i+1; j < doneTime.length; j++) {
+                if(minDeployTime >= doneTime[j]) {
+                    deployCountPerTime++;
+                }
+                if(minDeployTime < doneTime[j]) {
+                    i = j-1;
+                    break;
+                }
+            }
+
+            addCount += deployCountPerTime;
+
+            if(addCount > doneTime.length) {
+                break;
+            }
+
+            timeStamp.add(deployCountPerTime);
+
+        }
+    }
+
+    public void writeDonTimeReport(int[] progresses, int[] speeds, int time, int[] doneTime) {
 
         while (true) {
 
@@ -43,40 +112,6 @@ public class Pro42586 {
             time = time + 1;
 
         }
-
-        int addCount = 0;
-
-        for(int i = 0; i < doneTime.length; i++) {
-            int minDeployTime = doneTime[i];
-            int deployCountPerTime = 1;
-            for(int j = i+1; j < doneTime.length; j++) {
-                if(minDeployTime >= doneTime[j]) {
-                    deployCountPerTime++;
-                }
-                if(minDeployTime < doneTime[j]) {
-                    i = j-1;
-                    break;
-                }
-            }
-
-            addCount += deployCountPerTime;
-
-            if(addCount > doneTime.length) {
-                break;
-            }
-
-            timeStamp.add(deployCountPerTime);
-
-        }
-
-
-        int[] answer = new int[timeStamp.size()];
-
-        for(int i = 0; i < timeStamp.size(); i++) {
-            answer[i] = timeStamp.get(i);
-        }
-
-        return answer;
     }
 
     @Test
