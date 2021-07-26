@@ -19,7 +19,6 @@ public class Pro42586 {
 
         writeDonTimeReport(progresses, speeds, time, doneTime);
 
-        System.out.println(Arrays.toString(doneTime));
 
         int addCount = 0;
 
@@ -38,9 +37,11 @@ public class Pro42586 {
 
     public void queueSolution(int[] doneTime, Queue<Integer> workReportQueue, List<Integer> timeStamp) {
 
+
         for(int i = 0; i < doneTime.length; i++) {
             workReportQueue.add(doneTime[i]);
         }
+
 
         while (!workReportQueue.isEmpty()) {
 
@@ -50,7 +51,7 @@ public class Pro42586 {
             while (!workReportQueue.isEmpty()) {
                 if(workReportQueue.peek() <= beforeWorkTime) {
                     deployCount++;
-                    beforeWorkTime = workReportQueue.poll();
+                    beforeWorkTime = Math.max(workReportQueue.poll(), beforeWorkTime);
                 }else {
                     break;
                 }
@@ -122,6 +123,16 @@ public class Pro42586 {
     @Test
     public void caseTwo() {
         Assert.assertArrayEquals(solution(new int[]{95, 90, 99, 99, 80, 99}, new int[]{1, 1, 1, 1, 1, 1}), new int[]{1, 3, 2});
+    }
+
+    @Test
+    public void caseThr() {
+        Assert.assertArrayEquals(solution(new int[]{2, 2, 1, 2}, new int[]{1, 1, 1, 1}), new int[]{2, 2});
+    }
+
+    @Test
+    public void caseFour() {
+        Assert.assertArrayEquals(solution(new int[]{40, 93, 30, 55, 60, 65}, new int[]{60, 1, 30, 5 , 10, 7}), new int[]{1,2,3});
     }
 
 
